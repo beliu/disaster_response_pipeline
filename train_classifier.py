@@ -12,6 +12,25 @@ nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
 nltk.download('stopwords')
 nltk.download('maxent_ne_chunker')
 
+# This estimator creates two features. One feature is an
+# indicator for the word water and the other is an
+# indicator for the word food
+
+
+class WaterFoodExtractor(BaseEstimator, TransformerMixin):
+    from sklearn.base import BaseEstimator, TransformerMixin
+
+    def fit(self, x, y=None):
+        return self
+
+    def transform(self, X):
+        X_water = X.str.contains('water')
+        X_water.name = 'water'
+        X_food = X.str.contains('food')
+        X_food.name = 'food'
+
+        return pd.concat([X_water, X_food], axis=1)
+
 
 def load_data(database_filepath):
     '''
@@ -80,20 +99,23 @@ def build_model():
     from sklearn.pipeline import Pipeline
     from sklearn.ensemble import AdaBoostClassifier
     from sklearn.multioutput import MultiOutputClassifier
+    from sklearn.pipeline import FeatureUnion
     from sklearn.feature_extraction.text import (CountVectorizer,
                                                  TfidfTransformer)
 
     # Combine NLP features and train an AdaBoost Classifier
     model = Pipeline([
-        ('nlp_pipeline', Pipeline([
-            ('vect', CountVectorizer(tokenizer=tokenize,
-                                     max_df=0.75, ngram_range=(1, 2))),
-            ('tfidf', TfidfTransformer(norm='l2',
-                                       smooth_idf=True,
-                                       sublinear_tf=True)),
+        ('features', FeatureUnion([
+            ('nlp_pipeline', Pipeline([
+                ('vect', CountVectorizer(tokenizer=tokenize,
+                                         max_df=0.75, ngram_range=(1, 2))),
+                ('tfidf', TfidfTransformer(norm='l2',
+                                           smooth_idf=True,
+                                           sublinear_tf=True)),
+            ])),
+            ('water_food_extractor', WaterFoodExtractor())
         ])),
-        ('clf', MultiOutputClassifier(AdaBoostClassifier(
-            learning_rate=0.5)))
+        ('clf', MultiOutputClassifier(AdaBoostClassifier(learning_rate=0.5)))
     ])
 
     return model
