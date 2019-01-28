@@ -17,7 +17,7 @@ def load_data(messages_filepath, categories_filepath):
 
     # Read in the data
     messages = pd.read_csv(messages_filepath)
-    categories = pd.read_csv('categories.csv')
+    categories = pd.read_csv(categories_filepath)
 
     # merge datasets
     df = pd.merge(messages, categories, on='id')
@@ -27,9 +27,11 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     '''
-        Cleans up the category values and converts them to int values of [0, 1]
+        Cleans up the category values and converts them to
+        int values of [0, 1]
         ARGUMENTS:
-        df - a pandas dataframe that contains message and categories data
+        df - a pandas dataframe that contains message and
+            categories data
 
         RETURNS:
         df - a cleaned-up version of the dataframe

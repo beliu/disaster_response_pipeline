@@ -48,7 +48,7 @@ def load_data(database_filepath):
     from sqlalchemy import create_engine
 
     engine = create_engine('sqlite:///' + database_filepath)
-    df = pd.read_sql_table('DisasterResponse.db', engine)
+    df = pd.read_sql_table('DisasterResponseTable', engine)
     X = df.message
     Y = df.iloc[:, 4:]
     category_names = Y.columns.values
@@ -152,7 +152,8 @@ def save_model(model, model_filepath):
         Save a model to disk.
         ARGUMENTS:
         model - the model to save
-        model_filepath - the name of the data file to which the model was saved
+        model_filepath - the name of the data file to which
+        the model was saved
 
         RETURNS:
         None
