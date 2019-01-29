@@ -13,7 +13,7 @@ The files will download to your machine. The file structure will look like this:
 ![file_struct](imgs/files.png "File Structure")
 
 ## Usage
-There are three main groups of scripts: data processing, training and evaluating a model, and running the web application.
+There are main groups of scripts: data processing, training and evaluating a model, and running the web application.
 
 ### Data Processing
 The `data` folder contains files for reading in text messages and categories, and converting them into a form usable for the training model. You can run the data processing yourself by going into the `data` folder and issuing the following command:
@@ -23,7 +23,9 @@ The `data` folder contains files for reading in text messages and categories, an
 The file `process_data.py` runs the script. The next input is the name of the csv file with the text messages. Then, input the name of the file with the different message categories. Finally, input the name of the SQLite database to which the data will be saved. If the database name already exists then it will be overwritten. Of course, the above is just an example and you can substitute any filename you wish, as long as the file exists in the `data` folder
 
 ### Training and Evaluating the Model
-The `models` folder contains the files for training a model on the processed data and evaluating it using an F1-Score. In order to run the machine learning pipeline, navigate to the `models` folder and type the following command to the terminal:
+The `models` folder contains the files for training a model on the processed data and evaluating it using an F1-Score. I experimented with and built the ML pipeline in a Jupyter Notebook named `ML Pipeline Preparation.ipynb` inside the `jupyter_notebooks` folder. I selected an AdaBoost Classifier to catageorize the messages based on its higher performance (f1-score is the metric) compared to a Random Forest or a Multinomial Naive Bayes Classifier. I optimized the parameters for the classifiers by using `GridSearchCV` over an array of different parameter types and values. The optimal ones were selected for the AdaBoost classifier and used in the final pipeline for the web app.
+
+In order to run the machine learning pipeline, navigate to the `models` folder and type the following command to the terminal:
 
 `python train_classifier.py ../data/DisasterResponse.db classifier.pkl`
 
